@@ -1,22 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container, VStack, HStack, Box, Text, Textarea, Button, IconButton, Heading } from "@chakra-ui/react";
 import { FaThumbsUp, FaHeart, FaLaugh } from "react-icons/fa";
+import { usePosts, useAddPost } from "../integrations/supabase/index.js";
 
 const Index = () => {
-  const [posts, setPosts] = useState([]);
+  const { data: posts, isLoading, error } = usePosts();
+  const addPostMutation = useAddPost();
   const [newPost, setNewPost] = useState("");
+
+  useEffect(() => {
+    if (error) {
+      console.error("Error fetching posts:", error);
+    }
+  }, [error]);
 
   const addPost = () => {
     if (newPost.trim() !== "") {
-      setPosts([...posts, { content: newPost, reactions: { thumbsUp: 0, heart: 0, laugh: 0 } }]);
+      addPostMutation.mutate({ title: "Post", body: newPost, author_id: "user-id-placeholder" });
       setNewPost("");
     }
-  };
-
-  const addReaction = (index, reaction) => {
-    const updatedPosts = [...posts];
-    updatedPosts[index].reactions[reaction]++;
-    setPosts(updatedPosts);
   };
 
   return (
@@ -32,39 +34,43 @@ const Index = () => {
         />
         <Button onClick={addPost} colorScheme="blue">Post</Button>
       </Box>
-      <VStack spacing={4} align="stretch">
-        {posts.map((post, index) => (
-          <Box key={index} p={4} borderWidth="1px" borderRadius="md">
-            <Text mb={4}>{post.content}</Text>
-            <HStack spacing={4}>
-              <HStack>
-                <IconButton
-                  icon={<FaThumbsUp />}
-                  onClick={() => addReaction(index, "thumbsUp")}
-                  aria-label="Thumbs Up"
-                />
-                <Text>{post.reactions.thumbsUp}</Text>
+      {isLoading ? (
+        <Text>Loading...</Text>
+      ) : (
+        <VStack spacing={4} align="stretch">
+          {posts.map((post, index) => (
+            <Box key={index} p={4} borderWidth="1px" borderRadius="md">
+              <Text mb={4}>{post.body}</Text>
+              <HStack spacing={4}>
+                <HStack>
+                  <IconButton
+                    icon={<FaThumbsUp />}
+                    aria-label="Thumbs Up"
+                    isDisabled
+                  />
+                  <Text>{post.reactions.thumbsUp}</Text>
+                </HStack>
+                <HStack>
+                  <IconButton
+                    icon={<FaHeart />}
+                    aria-label="Heart"
+                    isDisabled
+                  />
+                  <Text>{post.reactions.heart}</Text>
+                </HStack>
+                <HStack>
+                  <IconButton
+                    icon={<FaLaugh />}
+                    aria-label="Laugh"
+                    isDisabled
+                  />
+                  <Text>{post.reactions.laugh}</Text>
+                </HStack>
               </HStack>
-              <HStack>
-                <IconButton
-                  icon={<FaHeart />}
-                  onClick={() => addReaction(index, "heart")}
-                  aria-label="Heart"
-                />
-                <Text>{post.reactions.heart}</Text>
-              </HStack>
-              <HStack>
-                <IconButton
-                  icon={<FaLaugh />}
-                  onClick={() => addReaction(index, "laugh")}
-                  aria-label="Laugh"
-                />
-                <Text>{post.reactions.laugh}</Text>
-              </HStack>
-            </HStack>
-          </Box>
-        ))}
-      </VStack>
+            </Box>
+          ))}
+        </VStack>
+      )}
     </Container>
   );
 };
