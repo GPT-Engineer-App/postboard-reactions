@@ -5,6 +5,7 @@ import { FaThumbsUp, FaHeart, FaLaugh } from "react-icons/fa";
 const Index = () => {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState("");
+  const [userReactions, setUserReactions] = useState({});
 
   const addPost = () => {
     if (newPost.trim() !== "") {
@@ -14,9 +15,24 @@ const Index = () => {
   };
 
   const addReaction = (index, reaction) => {
+    const userId = "currentUser"; // Replace with actual user identification logic
+    const postReactions = userReactions[index] || {};
+
+    if (postReactions[userId]) {
+      return; // User has already reacted to this post
+    }
+
     const updatedPosts = [...posts];
     updatedPosts[index].reactions[reaction]++;
     setPosts(updatedPosts);
+
+    setUserReactions({
+      ...userReactions,
+      [index]: {
+        ...postReactions,
+        [userId]: true,
+      },
+    });
   };
 
   return (
@@ -39,28 +55,28 @@ const Index = () => {
             <HStack spacing={4}>
               <HStack>
                 <IconButton
-                  icon={<FaThumbsUp />}
-                  onClick={() => addReaction(index, "thumbsUp")}
-                  aria-label="Thumbs Up"
-                />
-                <Text>{post.reactions.thumbsUp}</Text>
-              </HStack>
-              <HStack>
-                <IconButton
-                  icon={<FaHeart />}
-                  onClick={() => addReaction(index, "heart")}
-                  aria-label="Heart"
-                />
-                <Text>{post.reactions.heart}</Text>
-              </HStack>
-              <HStack>
-                <IconButton
-                  icon={<FaLaugh />}
-                  onClick={() => addReaction(index, "laugh")}
-                  aria-label="Laugh"
-                />
-                <Text>{post.reactions.laugh}</Text>
-              </HStack>
+                icon={<FaThumbsUp />}
+                onClick={() => addReaction(index, "thumbsUp")}
+                aria-label="Thumbs Up"
+              />
+              <Text>{post.reactions.thumbsUp}</Text>
+            </HStack>
+            <HStack>
+              <IconButton
+                icon={<FaHeart />}
+                onClick={() => addReaction(index, "heart")}
+                aria-label="Heart"
+              />
+              <Text>{post.reactions.heart}</Text>
+            </HStack>
+            <HStack>
+              <IconButton
+                icon={<FaLaugh />}
+                onClick={() => addReaction(index, "laugh")}
+                aria-label="Laugh"
+              />
+              <Text>{post.reactions.laugh}</Text>
+            </HStack>
             </HStack>
           </Box>
         ))}
