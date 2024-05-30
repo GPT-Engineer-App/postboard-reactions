@@ -48,7 +48,7 @@ const Index = () => {
                     aria-label="Thumbs Up"
                     isDisabled
                   />
-                  <Text>{post.reactions.thumbsUp}</Text>
+                  <Text>{post.reactions?.thumbsUp || 0}</Text>
                 </HStack>
                 <HStack>
                   <IconButton
@@ -56,7 +56,7 @@ const Index = () => {
                     aria-label="Heart"
                     isDisabled
                   />
-                  <Text>{post.reactions.heart}</Text>
+                  <Text>{post.reactions?.heart || 0}</Text>
                 </HStack>
                 <HStack>
                   <IconButton
@@ -64,7 +64,7 @@ const Index = () => {
                     aria-label="Laugh"
                     isDisabled
                   />
-                  <Text>{post.reactions.laugh}</Text>
+                  <Text>{post.reactions?.laugh || 0}</Text>
                 </HStack>
               </HStack>
             </Box>
