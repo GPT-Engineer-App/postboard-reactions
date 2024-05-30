@@ -45,24 +45,24 @@ const Index = () => {
                 <HStack>
                   <IconButton
                     icon={<FaThumbsUp />}
-                    onClick={() => addReaction(index, "thumbsUp")}
                     aria-label="Thumbs Up"
+                    isDisabled
                   />
                   <Text>{post.reactions.thumbsUp}</Text>
                 </HStack>
                 <HStack>
                   <IconButton
                     icon={<FaHeart />}
-                    onClick={() => addReaction(index, "heart")}
                     aria-label="Heart"
+                    isDisabled
                   />
                   <Text>{post.reactions.heart}</Text>
                 </HStack>
                 <HStack>
                   <IconButton
                     icon={<FaLaugh />}
-                    onClick={() => addReaction(index, "laugh")}
                     aria-label="Laugh"
+                    isDisabled
                   />
                   <Text>{post.reactions.laugh}</Text>
                 </HStack>
