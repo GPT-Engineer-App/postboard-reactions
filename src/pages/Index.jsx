@@ -18,8 +18,8 @@ const Index = () => {
     const userId = "currentUser"; // Replace with actual user identification logic
     const postReactions = userReactions[index] || {};
 
-    if (postReactions[userId]) {
-      return; // User has already reacted to this post
+    if (postReactions[userId] && postReactions[userId].count >= 2) {
+      return; // User has already reacted twice to this post
     }
 
     const updatedPosts = [...posts];
@@ -30,7 +30,9 @@ const Index = () => {
       ...userReactions,
       [index]: {
         ...postReactions,
-        [userId]: true,
+        [userId]: {
+          count: (postReactions[userId]?.count || 0) + 1,
+        },
       },
     });
   };
